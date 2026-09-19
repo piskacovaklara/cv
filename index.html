@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klara Neuman Piskacova — Career Cockpit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1B2A3C; --navy-2:#243851; --gold:#A9812F; --gold-soft:#D9CBA0;
+    --bg:#F4F5F3; --panel:#FFFFFF; --ink:#22303F; --sub:#5B6B7A; --line:#E1E5E8;
+    --sans:'Inter',system-ui,-apple-system,sans-serif;
+    --disp:'Space Grotesk',var(--sans);
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12181F; --panel:#1A222C; --ink:#E7ECF1; --sub:#93A2B2; --line:#2A3441;
+      --navy:#0E1620; --navy-2:#182432;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12181F; --panel:#1A222C; --ink:#E7ECF1; --sub:#93A2B2; --line:#2A3441;
+    --navy:#0E1620; --navy-2:#182432;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);}
+
+  .top{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;padding:28px clamp(18px,4vw,48px);}
+  .top-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;}
+  .name{font-family:var(--disp);font-weight:700;font-size:clamp(24px,4vw,34px);letter-spacing:.3px;margin:0;}
+  .role{color:var(--gold-soft);font-size:14px;margin-top:4px;font-family:var(--mono);}
+  .meta{font-size:12px;color:#B7C2CD;text-align:right;line-height:1.7;font-family:var(--mono);}
+  .pitch{max-width:1100px;margin:18px auto 0;padding-left:14px;border-left:2px solid var(--gold);font-size:15px;line-height:1.55;color:#E7ECF1;max-width:56ch;}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:22px clamp(18px,4vw,48px) 64px;}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:-34px 0 26px;position:relative;z-index:2;}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  .stat b{display:block;font-family:var(--disp);font-size:22px;color:var(--navy);}
+  :root[data-theme="dark"] .stat b, @media (prefers-color-scheme:dark){.stat b{color:var(--gold-soft);}}
+  .stat span{font-size:12px;color:var(--sub);}
+  .stat-click{cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .15s;position:relative;border-color:var(--gold);background:linear-gradient(180deg,rgba(169,129,47,.08),rgba(169,129,47,.02));}
+  .stat-click:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(169,129,47,.18);}
+  .stat-click em{display:inline-flex;align-items:center;gap:5px;font-style:normal;font-family:var(--mono);font-size:11px;color:var(--gold);margin-top:9px;font-weight:500;}
+
+  nav{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:24px;flex-wrap:wrap;}
+  nav button{appearance:none;background:none;border:none;color:var(--sub);font-family:var(--mono);font-size:13px;padding:12px 6px;margin-right:18px;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
+  nav button:hover{color:var(--ink);}
+  nav button.active{color:var(--navy);border-color:var(--gold);font-weight:500;}
+  @media (prefers-color-scheme:dark){nav button.active{color:var(--gold-soft);}}
+  :root[data-theme="dark"] nav button.active{color:var(--gold-soft);}
+
+  .panel{display:none;animation:fade .25s ease;}
+  .panel.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  h2{font-family:var(--disp);font-size:19px;margin:0 0 12px;color:var(--navy);}
+  @media (prefers-color-scheme:dark){h2{color:var(--gold-soft);}}
+  :root[data-theme="dark"] h2{color:var(--gold-soft);}
+  p.lead{color:var(--sub);line-height:1.65;max-width:70ch;margin:0 0 22px;}
+
+  .role-card{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:var(--panel);overflow:hidden;}
+  .role-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;cursor:pointer;gap:12px;}
+  .role-head:hover{background:rgba(169,129,47,.06);}
+  .role-title{font-weight:600;font-size:15px;}
+  .role-org{font-size:12.5px;color:var(--gold);font-family:var(--mono);}
+  .role-date{font-size:12px;color:var(--sub);font-family:var(--mono);white-space:nowrap;}
+  .role-body{max-height:0;overflow:hidden;transition:max-height .28s ease;}
+  .role-body ul{margin:0;padding:0 18px 16px 34px;color:var(--sub);line-height:1.6;font-size:14px;}
+  .role-card.open .role-body{max-height:400px;}
+  .role-card.open .chev{transform:rotate(90deg);}
+  .chev{transition:transform .2s;color:var(--sub);font-size:13px;}
+
+  .current-role{border:1px solid var(--gold);border-left:4px solid var(--gold);border-radius:10px;background:var(--panel);padding:20px 22px;box-shadow:0 6px 18px rgba(169,129,47,.10);}
+  .current-tag{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--gold);background:rgba(169,129,47,.12);border-radius:20px;padding:4px 10px;margin-bottom:10px;}
+  .cr-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+  .cr-title{font-family:var(--disp);font-weight:700;font-size:20px;}
+  .cr-org{font-size:13px;color:var(--gold);font-family:var(--mono);margin-top:2px;}
+  .current-role ul{margin:14px 0 0;padding-left:20px;color:var(--sub);line-height:1.7;font-size:14.5px;}
+
+  .exp-top{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+  .ai-column .grid{grid-template-columns:1fr;}
+  @media (max-width:820px){.exp-top{grid-template-columns:1fr;}}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
+  .proj{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:16px 18px;cursor:pointer;}
+  .proj h3{margin:0 0 6px;font-size:15px;font-family:var(--disp);}
+  .proj .psr{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .proj.open .psr{max-height:400px;margin-top:8px;}
+  .proj .tag{font-size:11px;font-family:var(--mono);color:var(--gold);}
+  .psr-line{margin:0 0 8px;font-size:13px;color:var(--sub);line-height:1.5;}
+  .psr-line:last-child{margin-bottom:0;}
+  .psr-label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--gold);font-weight:500;margin-bottom:2px;}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  @media (max-width:700px){.two-col{grid-template-columns:1fr;}}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;}
+  .tag-pill{border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:12.5px;color:var(--sub);}
+  ul.plain{padding-left:18px;color:var(--sub);line-height:1.7;font-size:14px;}
+
+  .theme-toggle{position:fixed;bottom:18px;right:18px;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:7px 14px;font-size:12px;font-family:var(--mono);color:var(--sub);cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-inner">
+    <div>
+      <p class="name">Klara Neuman Piskacova</p>
+      <p class="role">Finance Transformation &amp; Automation Leader</p>
+    </div>
+    <div class="meta">Prague, Czech Republic<br>[email address] · [phone number]<br>[LinkedIn URL]</div>
+  </div>
+  <p class="pitch">Built Phrase's billing function from scratch — now leads group-level Order-to-Cash and ships the AI tools that run it.</p>
+</div>
+
+<div class="wrap">
+
+  <div class="stats">
+    <div class="stat"><b>6+ yrs</b><span>Finance &amp; Order-to-Cash</span></div>
+    <div class="stat"><b>4</b><span>roles progressed at Phrase</span></div>
+    <div class="stat stat-click" onclick="goToAI()">
+      <b>AI-enabled</b>
+      <span>designs, codes &amp; ships automation</span>
+      <em>View projects <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H3M8 2V7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></em>
+    </div>
+  </div>
+
+  <nav>
+    <button class="active" data-tab="experience">Experience</button>
+    <button data-tab="expertise">Expertise</button>
+    <button data-tab="education">Education &amp; Languages</button>
+  </nav>
+
+  <section id="experience" class="panel active">
+    <div class="exp-top">
+      <div class="current-role">
+        <span class="current-tag">Current Role</span>
+        <div class="cr-head">
+          <div>
+            <div class="cr-title">Order-to-Cash Manager</div>
+            <div class="cr-org">Phrase — Prague, Czech Republic</div>
+          </div>
+          <div class="role-date">June 2025 – Present</div>
+        </div>
+        <ul id="current-role-items"></ul>
+      </div>
+
+      <div class="ai-column" id="ai-section">
+        <h2>AI &amp; Automation Initiatives</h2>
+        <p class="lead" style="margin-bottom:14px;">Ongoing hands-on initiatives developed within the Order-to-Cash Manager role, reflecting an expanding personal roadmap for AI-enabled finance automation.</p>
+        <div class="grid" id="ai-grid"></div>
+      </div>
+    </div>
+
+    <h2 style="margin-top:32px;">Earlier Experience</h2>
+    <div id="role-list"></div>
+  </section>
+
+
+  <section id="expertise" class="panel">
+    <div class="two-col">
+      <div>
+        <h2>Core Expertise</h2>
+        <ul class="plain" id="expertise-list"></ul>
+      </div>
+      <div>
+        <h2>Core Systems</h2>
+        <div class="tags" id="systems-tags"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="education" class="panel">
+    <div class="two-col">
+      <div>
+        <h2>Education</h2>
+        <p style="font-weight:600;margin:0 0 2px;">Secondary Business School</p>
+        <p class="lead" style="margin-bottom:16px;">Prague, Czech Republic — Completed with school-leaving examination (maturita)</p>
+        <h2>Additional Training</h2>
+        <ul class="plain">
+          <li>Improvisation Course — one-semester course</li>
+          <li>Presentation and communication training</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Languages</h2>
+        <div class="tags">
+          <span class="tag-pill">Czech — Native</span>
+          <span class="tag-pill">English — Fluent / Full Professional Proficiency</span>
+          <span class="tag-pill">Italian — Intermediate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<button class="theme-toggle" onclick="toggleTheme()">☾ / ☀</button>
+
+<script>
+const currentRole = {title:"Order-to-Cash Manager", org:"Phrase — Prague, Czech Republic", date:"June 2025 – Present", items:[
+  "Report directly to the CFO; hold group-level responsibility for Order-to-Cash activities across Czechia and Germany, serving customers globally.",
+  "Manage a team of two, owning O2C performance, operational priorities and key KPIs.",
+  "Act as the main operational partner to the CFO on O2C topics, working closely with Finance, Sales, Customer Success and Product.",
+  "Translate finance and business requirements into practical system, process and automation solutions.",
+  "Develop and continuously expand an AI and automation roadmap across billing, collections, order management and finance operations."
+]};
+
+const earlierRoles = [
+  {title:"Accounts Receivable Manager", org:"Phrase — Prague, Czech Republic", date:"January 2024 – June 2025", items:[
+    "Managed one direct report; continued developing and improving billing and accounts receivable processes.",
+    "Implemented and structured proactive dunning using Upflow.",
+    "Contributed to the NetSuite implementation by representing AR requirements.",
+    "Supported the migration and implementation of a new pricing model, representing AR and billing requirements."
+  ]},
+  {title:"Billing Specialist", org:"Phrase — Prague, Czech Republic", date:"May 2020 – December 2023", items:[
+    "Joined as Phrase's first billing specialist, at a time when the billing function was not yet formally structured.",
+    "Built the billing function and core billing processes from scratch, working closely with the newly appointed CFO.",
+    "Partnered on the implementation and configuration of Chargebee as the subscription management and billing system.",
+    "Established the foundations for a more structured and scalable billing operation."
+  ]},
+  {title:"Event Coordinator", org:"Phrase — Prague, Czech Republic", date:"January 2018 – May 2020", items:[
+    "Managed and coordinated company events, overseeing planning, logistics, suppliers, timelines and communication with internal and external stakeholders."
+  ]},
+  {title:"International Relations & Event Operations", org:"RunCzech / Prague International Marathon — Prague, Czech Republic", date:"January 2017 – December 2017", items:[
+    "Supported international relations and coordination with overseas partners and stakeholders.",
+    "Participated in the organization and delivery of major running events, coordinating operational requirements, timelines and stakeholders."
+  ]},
+  {title:"Travel Product & Group Sales", org:"Travel Agency — Prague, Czech Republic", date:"July 2015 – December 2016", items:[
+    "Developed and sold travel packages for large tourist groups, travel agencies and international partners.",
+    "Coordinated commercial and operational requirements."
+  ]}
+];
+
+const aiProjects = [
+  {tag:"Workflow", title:"AI-Assisted Order Form Approval Workflow",
+    problem:"Finance previously had to manually compare order form information, pricing requirements and customer data across Salesforce and Chargebee before giving billing approval.",
+    solution:"Designed an AI-assisted workflow that compares the relevant information, identifies discrepancies and missing data, and summarizes required corrections for Sales before final Finance approval.",
+    result:"Creates a more structured and consistent pre-billing review process and reduces repetitive manual comparison for Finance."},
+  {tag:"AI Agent", title:"Debtor Risk Radar",
+    problem:"Potential invoice and debtor issues were often identified only after payment problems had already emerged.",
+    solution:"Designed, coded and released an AI agent that analyzes twelve months of billing, payment and customer data to identify invoices at risk of becoming problematic debtors, highlight risk signals and suggest preventive actions. Integrated into the O2C Cockpit and released through GitHub.",
+    result:"Provides earlier visibility into potential debtor risks and supports a more proactive approach to collections and invoice issue prevention."},
+  {tag:"Platform concept", title:"O2C Cockpit",
+    problem:"Relevant O2C information was spread across multiple systems, making it harder to get a consolidated operational view.",
+    solution:"Developed the business concept, roadmap and use cases for an internal O2C Cockpit bringing together customer, Zendesk, Jira, dunning and finance-system information. Partnered with the CFO and other contributors on its development.",
+    result:"Creates a consolidated operational view and provides a foundation for AI-enabled actions and process automation across O2C."},
+  {tag:"Integration", title:"Chargebee Product Catalogue Integration",
+    problem:"Finance did not have an operational product catalogue view tailored to its needs, and creation of new billing items involved manual coordination.",
+    solution:"Integrated the Chargebee product catalogue into the O2C Cockpit and designed the next-stage workflow for agent-assisted creation of new billing items across Chargebee and, longer term, NetSuite.",
+    result:"Creates a more standardized view of billing items and establishes a path toward more consistent, agent-assisted product setup."},
+  {tag:"Roadmap", title:"AI & Finance Transformation Roadmap",
+    focus:"Continuously identify, prioritize and develop opportunities to simplify Finance processes, prevent operational issues and automate repetitive workflows through AI and automation."}
+];
+
+const expertise = [
+  "Finance transformation & process design",
+  "Order-to-Cash strategy & group-level ownership",
+  "Hands-on design, coding & release of AI-enabled automation",
+  "Business requirements → practical system solutions",
+  "CFO-level business partnering",
+  "Cross-functional collaboration: Finance, Sales, Customer Success, Product",
+  "Billing, dunning, collections & AR operations",
+  "Operational control, prevention & data quality"
+];
+const systems = ["Chargebee","Upflow","NetSuite","Salesforce","Zendesk","Jira","Avalara","Python","Claude"];
+
+document.getElementById('current-role-items').innerHTML = currentRole.items.map(x=>`<li>${x}</li>`).join('');
+
+document.getElementById('role-list').innerHTML = earlierRoles.map((r,i)=>`
+  <div class="role-card" id="role-${i}">
+    <div class="role-head" onclick="toggleRole(${i})">
+      <div>
+        <div class="role-title">${r.title}</div>
+        <div class="role-org">${r.org}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="role-date">${r.date}</span>
+        <span class="chev">▸</span>
+      </div>
+    </div>
+    <div class="role-body"><ul>${r.items.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+  </div>`).join('');
+
+document.getElementById('ai-grid').innerHTML = aiProjects.map((p,i)=>`
+  <div class="proj" id="proj-${i}" onclick="toggleProj(${i})">
+    <span class="tag">${p.tag}</span>
+    <h3>${p.title}</h3>
+    <div class="psr">
+      ${p.focus ? `<p class="psr-line"><span class="psr-label">Focus</span>${p.focus}</p>` : `
+      <p class="psr-line"><span class="psr-label">Problem</span>${p.problem}</p>
+      <p class="psr-line"><span class="psr-label">Solution</span>${p.solution}</p>
+      <p class="psr-line"><span class="psr-label">Result</span>${p.result}</p>`}
+    </div>
+  </div>`).join('');
+
+document.getElementById('expertise-list').innerHTML = expertise.map(e=>`<li>${e}</li>`).join('');
+document.getElementById('systems-tags').innerHTML = systems.map(s=>`<span class="tag-pill">${s}</span>`).join('');
+
+function toggleRole(i){ document.getElementById('role-'+i).classList.toggle('open'); }
+function toggleProj(i){ document.getElementById('proj-'+i).classList.toggle('open'); }
+
+document.querySelectorAll('nav button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+function toggleTheme(){
+  const root = document.documentElement;
+  const cur = root.getAttribute('data-theme');
+  root.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+}
+
+function goToAI(){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector('nav button[data-tab="experience"]').classList.add('active');
+  document.getElementById('experience').classList.add('active');
+  document.getElementById('ai-section').scrollIntoView({behavior:'smooth', block:'start'});
+}
+</script>
+</body>
+</html>
